@@ -4,16 +4,22 @@ author: 'Your name or organization here'
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  labels:
+    description: 'Provide a comma separated list of labels passed to the PR for the version bump.'
     required: true
-    default: '1000'
+    default: 'patch'
+  path:
+    description: 'Path of package.json'
+    default: "./"
+  node-version-file:
+    description: 'File containing the version Spec of the version to use.  Examples: .nvmrc, .node-version, .tool-versions.'
+    default: "./nvmrc"
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  version:
+    description: "Version of package"
 
 runs:
-  using: node20
+  using: node16
   main: dist/index.js
