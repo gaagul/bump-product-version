@@ -3980,6 +3980,73 @@ module.exports = bumpFrontend
 
 /***/ }),
 
+/***/ 208:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(186)
+const exec = __nccwpck_require__(514)
+
+const getLabels = (labels, defaultBumpLabel) => {
+  const bumpTypes = ['major', 'minor', 'patch']
+  const labelsArray = labels.split(',')
+  const isDefaultBumpLabelPresent = bumpTypes.some(
+    bumpType => bumpType === defaultBumpLabel
+  )
+  const isBumpTypePresent = bumpTypes.some(bumpType =>
+    labelsArray.includes(bumpType)
+  )
+
+  if (isBumpTypePresent) {
+    return labels
+  } else {
+    return isDefaultBumpLabelPresent ? defaultBumpLabel : false
+  }
+}
+
+const bumpGem = async () => {
+  const labels = core.getInput('labels')
+  const defaultBumpLabel = core.getInput('default_bump_label')
+
+  const prLabels = getLabels(labels, defaultBumpLabel)
+
+  if (!prLabels) {
+    core.setFailed(
+      'No bump type label (major, minor, or patch) or default bump label was found in the PR.'
+    )
+  }
+
+  try {
+    if (core.isDebug()) {
+      core.debug('Installing the gem...')
+      await exec.exec('gem install bump_gem_version')
+    } else {
+      await exec.exec('gem install -q --silent bump_gem_version')
+    }
+
+    if (core.isDebug()) {
+      core.debug('Before bump, the gem version was:')
+      await exec.exec('bump_gem_version current')
+    }
+
+    core.debug('Bumping gem version...')
+    await exec.exec(`bump_gem_version labels ${prLabels}`)
+
+    core.info('Successfully bumped gem version! 🎉')
+
+    if (core.isDebug()) {
+      core.debug('After bump, the gem version is:')
+      await exec.exec('bump_gem_version current')
+    }
+  } catch (error) {
+    core.setFailed(error.message)
+  }
+}
+
+module.exports = bumpGem
+
+
+/***/ }),
+
 /***/ 608:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
@@ -4207,15 +4274,15 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(186)
 
-// const bumpGem = require("./bump");
+const bumpGem = __nccwpck_require__(208)
 const bumpFrontend = __nccwpck_require__(669)
 
 const run = async () => {
   try {
     const labels = core.getInput('labels').split(',')
-    // if(labels.includes("backend")) {
-    //   await bumpGem();
-    // }
+    if (labels.includes('backend')) {
+      await bumpGem()
+    }
 
     if (labels.includes('frontend')) {
       core.info('Bumping frontend version...')
