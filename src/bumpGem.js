@@ -38,6 +38,8 @@ const bumpGem = async () => {
       await exec.exec('gem install -q --silent bump_gem_version')
     }
 
+    await exec.exec('bundle install')
+
     if (core.isDebug()) {
       core.debug('Before bump, the gem version was:')
       await exec.exec('bump_gem_version current')
