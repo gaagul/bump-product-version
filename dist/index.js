@@ -3980,35 +3980,6 @@ module.exports = bumpFrontend
 
 /***/ }),
 
-/***/ 713:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const core = __nccwpck_require__(186)
-
-// const bumpGem = require("./bump");
-const bumpFrontend = __nccwpck_require__(669)
-
-const run = async () => {
-  try {
-    const labels = core.getInput('labels').split(',')
-    // if(labels.includes("backend")) {
-    //   await bumpGem();
-    // }
-
-    if (labels.includes('frontend')) {
-      core.info('Bumping frontend version...')
-      await bumpFrontend(labels)
-    }
-  } catch (error) {
-    core.setFailed(error.message)
-  }
-}
-
-run()
-
-
-/***/ }),
-
 /***/ 608:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
@@ -4234,10 +4205,26 @@ module.exports = require("util");
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/**
- * The entrypoint for the action.
- */
-const { run } = __nccwpck_require__(713)
+const core = __nccwpck_require__(186)
+
+// const bumpGem = require("./bump");
+const bumpFrontend = __nccwpck_require__(669)
+
+const run = async () => {
+  try {
+    const labels = core.getInput('labels').split(',')
+    // if(labels.includes("backend")) {
+    //   await bumpGem();
+    // }
+
+    if (labels.includes('frontend')) {
+      core.info('Bumping frontend version...')
+      await bumpFrontend(labels)
+    }
+  } catch (error) {
+    core.setFailed(error.message)
+  }
+}
 
 run()
 
